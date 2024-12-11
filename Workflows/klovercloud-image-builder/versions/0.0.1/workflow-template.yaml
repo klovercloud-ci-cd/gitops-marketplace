@@ -1,0 +1,156 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  annotations:
+    klovercloud-workflow-hub/category: 'ARGO'
+  name: klovercloud-image-builder
+spec:
+  entrypoint: klovercloud-image-builder
+  templates:
+    - name: klovercloud-image-builder
+      inputs:
+        parameters:
+          - name: SECRET_NAME
+          - name: REGISTRY_DOCKER_CONFIG_JSON_VALUE
+          - name: KANIKO_POD_NAME
+          - name: GIT_USERNAME
+          - name: GIT_TOKEN
+          - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
+          - name: GIT_REPOSITORY_BRANCH
+          - name: REGISTRY_USERNAME
+          - name: NEW_IMAGE_NAME
+          - name: NEW_IMAGE_VERSION_TAG
+          - name: PATH_TO_DOCKERFILE
+      dag:
+        tasks:
+        - name: registry-secret-creation
+          template: registry-secret-creation
+          arguments:
+            parameters:
+              - name: SECRET_NAME
+                value: '{{inputs.parameters.SECRET_NAME}}'
+              - name: REGISTRY_DOCKER_CONFIG_JSON_VALUE
+                value: '{{inputs.parameters.REGISTRY_DOCKER_CONFIG_JSON_VALUE}}'
+        - name: kaniko-image-builder
+          template: kaniko-image-builder
+          dependencies: [registry-secret-creation]
+          arguments:
+            parameters:
+              - name: KANIKO_POD_NAME
+                value: '{{inputs.parameters.KANIKO_POD_NAME}}'
+              - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
+                value: '{{inputs.parameters.GIT_REPOSITORY_URL_WITHOUT_HTTPS}}'
+              - name: GIT_REPOSITORY_BRANCH
+                value: '{{inputs.parameters.GIT_REPOSITORY_BRANCH}}'
+              - name: PATH_TO_DOCKERFILE
+                value: '{{inputs.parameters.PATH_TO_DOCKERFILE}}'
+              - name: REGISTRY_USERNAME
+                value: '{{inputs.parameters.REGISTRY_USERNAME}}'
+              - name: NEW_IMAGE_NAME
+                value: '{{inputs.parameters.NEW_IMAGE_NAME}}'
+              - name: NEW_IMAGE_VERSION_TAG
+                value: '{{inputs.parameters.NEW_IMAGE_VERSION_TAG}}'
+              - name: GIT_USERNAME
+                value: '{{inputs.parameters.GIT_USERNAME}}'
+              - name: GIT_TOKEN
+                value: '{{inputs.parameters.GIT_TOKEN}}'
+              - name: SECRET_NAME
+                value: '{{inputs.parameters.SECRET_NAME}}'
+        - name: resource-clean-up
+          template: kaniko-pod-deletion
+          dependencies: [kaniko-image-builder]
+          arguments:
+            parameters:
+              - name: KANIKO_POD_NAME
+                value: '{{inputs.parameters.KANIKO_POD_NAME}}'
+
+    - name: registry-secret-creation
+      metadata:
+        labels:
+          type: DOCKER_REG_SECRET
+      inputs:
+        parameters:
+          - name: SECRET_NAME
+          - name: REGISTRY_DOCKER_CONFIG_JSON_VALUE
+      resource:
+        action: apply
+        manifest: |
+          apiVersion: v1
+          data:
+            .dockerconfigjson: {{inputs.parameters.REGISTRY_DOCKER_CONFIG_JSON_VALUE}}
+          kind: Secret
+          metadata:
+            creationTimestamp: null
+            name: {{inputs.parameters.SECRET_NAME}}
+          type: kubernetes.io/dockerconfigjson      
+
+    - name: kaniko-image-builder
+      inputs:
+        parameters:
+          - name: KANIKO_POD_NAME
+          - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
+          - name: GIT_REPOSITORY_BRANCH
+          - name: PATH_TO_DOCKERFILE
+          - name: REGISTRY_USERNAME
+          - name: NEW_IMAGE_NAME
+          - name: NEW_IMAGE_VERSION_TAG
+          - name: GIT_USERNAME
+          - name: GIT_TOKEN
+          - name: SECRET_NAME
+      metadata:
+        labels:
+          type: DOCKER_IMAGE
+      outputs: { }
+      resource:
+        action: apply
+        failureCondition: status.phase in (Failed, Error)
+        manifest: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            creationTimestamp: null
+            name: {{inputs.parameters.KANIKO_POD_NAME}}
+          spec:
+            containers:
+            - args:
+              - --context=git:{{inputs.parameters.GIT_REPOSITORY_URL_WITHOUT_HTTPS}}#{{inputs.parameters.GIT_REPOSITORY_BRANCH}}
+              - --dockerfile={{inputs.parameters.PATH_TO_DOCKERFILE}}
+              - --destination={{inputs.parameters.REGISTRY_USERNAME}}/{{inputs.parameters.NEW_IMAGE_NAME}}:{{inputs.parameters.NEW_IMAGE_VERSION_TAG}}
+              env:
+              - name: GIT_USERNAME
+                value: '{{inputs.parameters.GIT_USERNAME}}'
+              - name: GIT_PASSWORD
+                value: '{{inputs.parameters.GIT_TOKEN}}'
+              image: gcr.io/kaniko-project/executor:latest
+              name: kaniko
+              resources: {}
+              volumeMounts:
+              - mountPath: /kaniko/.docker
+                name: kaniko-secret
+            restartPolicy: Never
+            volumes:
+            - name: kaniko-secret
+              secret:
+                items:
+                - key: .dockerconfigjson
+                  path: config.json
+                secretName: {{inputs.parameters.SECRET_NAME}}
+          status: {}
+        successCondition: status.phase == Succeeded
+
+    - name: kaniko-pod-deletion
+      inputs:
+        parameters:
+          - name: KANIKO_POD_NAME
+      metadata:
+        labels:
+          type: RESOURCE_CLEAN_UP
+      resource:
+        action: delete
+        manifest: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: {{inputs.parameters.KANIKO_POD_NAME}}
+          spec:
+            containers: null

@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  annotations:
+    klovercloud-workflow-hub/category: 'ARGO'
+  name: klovercloud-repo-scanner
+spec:
+  templates:
+    - name: github-repo-scanner
+      inputs:
+        parameters:
+          - name: GIT_REPO_BRANCH  # Required parameter for repo scanning
+          - name: GIT_REPO_URL   # Required parameter for repo scanning
+          - name: GIT_TOKEN  # Optional parameter for authentication (if needed)
+      container:
+        image: aquasec/trivy
+        command: [trivy, repo, --branch, "{{inputs.parameters.GIT_REPO_BRANCH}}", "{{inputs.parameters.GIT_REPO_URL}}"]
+        env:
+          - name: GITHUB_TOKEN
+            value: "{{inputs.parameters.GIT_TOKEN}}"  # Access the optional parameter
+            
+    - name: gitlab-repo-scanner
+      inputs:
+        parameters:
+          - name: GIT_REPO_BRANCH  # Required parameter for repo scanning
+          - name: GIT_REPO_URL   # Required parameter for repo scanning
+          - name: GIT_TOKEN  # Optional parameter for authentication (if needed)
+      container:
+        image: aquasec/trivy
+        command: [trivy, repo, --branch, "{{inputs.parameters.GIT_REPO_BRANCH}}", "{{inputs.parameters.GIT_REPO_URL}}"]
+        env:
+          - name: GITLAB_TOKEN
+            value: "{{inputs.parameters.GIT_TOKEN}}"  # Access the optional parameter 
+     
+    - name: bitbucket-private-repo-scanner
+      inputs:
+        parameters:
+          - name: GIT_REPO_BRANCH # Required parameter for repo scanning
+          - name: GIT_USERNAME # Required parameter for repo scanning
+          - name: GIT_TOKEN # Required parameter for repo scanning
+          - name: BITBUCKET_WORKSPACE_NAME # Required parameter for repo scanning
+          - name: GIT_REPO_NAME # Required parameter for repo scanning
+      container:
+        image: aquasec/trivy
+        command: [trivy, repo, --branch, "{{inputs.parameters.GIT_REPO_BRANCH}}", "https://{{inputs.parameters.GIT_USERNAME}}:{{inputs.parameters.GIT_TOKEN}}@bitbucket.org/{{inputs.parameters.BITBUCKET_WORKSPACE_NAME}}/{{inputs.parameters.GIT_REPO_NAME}}"]
+
+    - name: bitbucket-public-repo-scanner
+      inputs:
+        parameters:
+          - name: GIT_REPO_NAME # Required parameter for repo scanning
+          - name: GIT_REPO_BRANCH # Required parameter for repo scanning
+          - name: BITBUCKET_WORKSPACE_NAME # Required parameter for repo scanning
+      container:
+        image: aquasec/trivy
+        command: [ trivy, repo, --branch, "{{inputs.parameters.GIT_REPO_BRANCH}}", "https://bitbucket.org/{{inputs.parameters.BITBUCKET_WORKSPACE_NAME}}/{{inputs.parameters.GIT_REPO_NAME}}"]
