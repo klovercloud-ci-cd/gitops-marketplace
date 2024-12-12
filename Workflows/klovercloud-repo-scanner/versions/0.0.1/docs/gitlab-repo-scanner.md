@@ -1,4 +1,4 @@
-# github-repo-scanner
+# gitlab-repo-scanner
 This template uses Trivy to scan your private/public GitLab repository.
 
 # Template Parameters
