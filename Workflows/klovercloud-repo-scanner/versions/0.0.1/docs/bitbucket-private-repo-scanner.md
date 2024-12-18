@@ -2,11 +2,11 @@
 This template uses Trivy to scan your private BitBucket repository.
 
 # Template Parameters
-- **GIT_REPO_BRANCH:** The name of the branch you want to scan from your repository.
+- **GIT_REPOSITORY_BRANCH:** The name of the branch you want to scan from your repository.
 - **GIT_USERNAME:** The username of your BitBucket.
 - **GIT_TOKEN:** The token (App Password) of your BitBucket.
 - **BITBUCKET_WORKSPACE_NAME:** The name of the workspace in your BitBucket.
-- **GIT_REPO_NAME:** The repository name of your BitBucket
+- **GIT_REPOSITORY_NAME:** The repository name of your BitBucket
 
 ## Examples
 ```yaml  
@@ -27,7 +27,7 @@ spec:
               template: bitbucket-private-repo-scanner
             arguments:
               parameters:
-                - name: GIT_REPO_NAME
+                - name: GIT_REPOSITORY_NAME
                   value: 'basic'
                 - name: BITBUCKET_WORKSPACE_NAME
                   value: 'klovercloud'
@@ -35,6 +35,6 @@ spec:
                   value: 'your-token'
                 - name: GIT_USERNAME
                   value: 'rafsnil'
-                - name: GIT_REPO_BRANCH
+                - name: GIT_REPOSITORY_BRANCH
                   value: 'master'
 ```

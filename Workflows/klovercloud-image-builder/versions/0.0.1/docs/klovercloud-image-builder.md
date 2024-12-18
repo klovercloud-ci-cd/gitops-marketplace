@@ -10,14 +10,13 @@ This template is a DAG template which consists of three steps:
 
 - **SECRET_NAME:** The name of Secret which will be created in your Kubernetes Cluster. 
 - **REGISTRY_DOCKER_CONFIG_JSON_VALUE:** The .dockerconigjson value of your Secret.
-- **KANIKO_POD_NAME:** The name of the Kaniko Pod which will be responsible for building and pushing the image.
 - **GIT_USERNAME:** The username of your Git account.
 - **GIT_TOKEN:** The token of your Git account.
 - **GIT_REPOSITORY_URL_WITHOUT_HTTPS:** The https clone url of your repository without the "https".
 - **GIT_REPOSITORY_BRANCH:** The repository for which you want the image to be built.
 - **REGISTRY_USERNAME:** The name of your registry username.
-- **NEW_IMAGE_NAME:** The name of the new image.
-- **NEW_IMAGE_VERSION_TAG:** The image tag of the new image.
+- **IMAGE_NAME:** The name of the new image.
+- **IMAGE_VERSION_TAG:** The image tag of the new image.
 - **PATH_TO_DOCKERFILE:** The location of the Dockerfile in your repository, e.g. ("Dockerfile" or "some-directory/Dockerfile")
 
 ## Examples
@@ -42,8 +41,6 @@ spec:
                   value: 'kaniko-secret'
                 - name: REGISTRY_DOCKER_CONFIG_JSON_VALUE
                   value: 'ewogICJhdXRocyI6IHsKICAgICJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOiB7CiAgICAgICJ1c2VybmFtZSI6ICJuYW1lIiwKICAgICAgInBhc3N3b3JkIjogImdocF9oZWhlaGVoZWhlaGVoZWhlaGVoZWhlaGVoZWhlIiwKICAgICAgImVtYWlsIjogIiIsCiAgICAgICJhdXRoIjogImJtRnRaVHBuYUhCZmFHVm9aV2hsYUdWb1pXaGxhR1ZvWldobGFHVm9aV2hsYUdWb1pRPT0iCiAgICB9CiAgfQp9'
-                - name: KANIKO_POD_NAME
-                  value: 'kaniko-builder-pod'
                 - name: GIT_USERNAME
                   value: 'name'
                 - name: GIT_TOKEN
@@ -54,9 +51,9 @@ spec:
                   value: 'dev'
                 - name: REGISTRY_USERNAME
                   value: 'name'
-                - name: NEW_IMAGE_NAME
+                - name: IMAGE_NAME
                   value: 'basic-api-dev'
-                - name: NEW_IMAGE_VERSION_TAG
+                - name: IMAGE_VERSION_TAG
                   value: '0.0.1'
                 - name: PATH_TO_DOCKERFILE
                   value: "Dockerfile"

@@ -7,7 +7,7 @@ metadata:
 spec:
   templates:
     # trivy image quay.io/<username>/<image-name>:<tag>
-    - name: trivy-docker-image-scanner  
+    - name: trivy-docker-image-scanner
       inputs:
         parameters:
           - name: IMAGE_NAME # Required
@@ -22,27 +22,27 @@ spec:
             value: "{{inputs.parameters.REGISTRY_USERNAME}}"
           - name: TRIVY_PASSWORD
             value: "{{inputs.parameters.REGISTRY_PASSWORD}}"
-    
-    # trivy image quay.io/<organization>/<image-name>:<tag>
-    - name: trivy-quay-image-scanner  
+
+    # trivy image quay.io/<organization>/<image-name>:<tag> OR
+    # trivy image quay.io/<user_name>/<image-name>:<tag>
+    - name: trivy-quay-image-scanner
       inputs:
         parameters:
-          - name: ORGANIZATION_NAME
           - name: IMAGE_NAME # Required
           - name: IMAGE_VERSION_TAG
           - name: REGISTRY_USERNAME  # Optional, Required if registry is private
           - name: REGISTRY_PASSWORD   # Optional, Required if registry is private
       container:
         image: aquasec/trivy
-        command: [trivy, image, "quay.io/{{inputs.parameters.ORGANIZATION_NAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}"]
+        command: [trivy, image, "quay.io/{{inputs.parameters.REGISTRY_USERNAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}"]
         env:
           - name: TRIVY_USERNAME
             value: "{{inputs.parameters.REGISTRY_USERNAME}}"
           - name: TRIVY_PASSWORD
             value: "{{inputs.parameters.REGISTRY_PASSWORD}}"
-            
+
       # trivy image <harbor-registry-url>/<project-name>/<image-name>:<tag>
-    - name: trivy-harbor-image-scanner  
+    - name: trivy-harbor-image-scanner
       inputs:
         parameters:
           - name: HARBOR_REGISTRY_URL
@@ -53,7 +53,7 @@ spec:
           - name: REGISTRY_PASSWORD   # Optional, Required if registry is private
       container:
         image: aquasec/trivy
-        command: [trivy, image, "quay.io/{{inputs.parameters.HARBOR_REGISTRY_URL}}/{{inputs.parameters.PROJECT_NAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}"]
+        command: [trivy, image, "{{inputs.parameters.HARBOR_REGISTRY_URL}}/{{inputs.parameters.PROJECT_NAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}"]
         env:
           - name: TRIVY_USERNAME
             value: "{{inputs.parameters.REGISTRY_USERNAME}}"

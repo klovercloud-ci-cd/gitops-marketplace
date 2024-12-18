@@ -6,7 +6,7 @@ metadata:
   name: klovercloud-deployment-trigger
 spec:
   templates:
-    - name: basic-deployment-trigger
+    - name: basic-trigger
       inputs:
         parameters:
           - name: PUT_REQUEST_URL # Required
@@ -15,6 +15,6 @@ spec:
         image: quay.io/klovercloud/service:klovercloud-deployment-trigger-v0.0.4-dev
         env:
           - name: GET_REQUEST_URL
-            value: '{{inputs.parameters.GET_REQUEST_URL}}'
+            value: "{{inputs.parameters.GET_REQUEST_URL}}"
           - name: PUT_REQUEST_URL
-            value: '{{inputs.parameters.PUT_REQUEST_URL}}'
+            value: "{{inputs.parameters.PUT_REQUEST_URL}}"

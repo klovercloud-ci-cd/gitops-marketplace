@@ -6,7 +6,6 @@ This template uses Trivy to scan your image in your Quay Registry.
 - **IMAGE_VERSION_TAG:** The version/tag of the image you want to scan.
 - **REGISTRY_USERNAME:** The username of your registry.
 - **REGISTRY_PASSWORD:** The token of your registry.
-- **ORGANIZATION_NAME:** The name of your organization or workspace.
 
 ## Examples
 ```yaml  
@@ -27,8 +26,6 @@ spec:
           template: trivy-quay-image-scanner
         arguments:
           parameters:
-            - name: ORGANIZATION_NAME
-              value: ''
             - name: IMAGE_NAME
               value: 'potato-v1-dev-branch'
             - name: IMAGE_TAG
