@@ -12,7 +12,6 @@ spec:
         parameters:
           - name: SECRET_NAME
           - name: REGISTRY_DOCKER_CONFIG_JSON_VALUE
-          - name: KANIKO_POD_NAME
           - name: GIT_USERNAME
           - name: GIT_TOKEN
           - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
@@ -34,10 +33,11 @@ spec:
           - name: kaniko-image-builder
             template: kaniko-image-builder
             dependencies: [registry-secret-creation]
+            continueOn:
+              failed: true
+              error: true
             arguments:
               parameters:
-                - name: KANIKO_POD_NAME
-                  value: '{{inputs.parameters.KANIKO_POD_NAME}}'
                 - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
                   value: '{{inputs.parameters.GIT_REPOSITORY_URL_WITHOUT_HTTPS}}'
                 - name: GIT_REPOSITORY_BRANCH
@@ -63,7 +63,6 @@ spec:
               parameters:
                 - name: IMAGE_VERSION_TAG
                   value: '{{inputs.parameters.IMAGE_VERSION_TAG}}'
-
     - name: registry-secret-creation
       metadata:
         labels:
@@ -87,7 +86,6 @@ spec:
     - name: kaniko-image-builder
       inputs:
         parameters:
-          - name: KANIKO_POD_NAME
           - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
           - name: GIT_REPOSITORY_BRANCH
           - name: PATH_TO_DOCKERFILE
