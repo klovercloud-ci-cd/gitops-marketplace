@@ -17,7 +17,7 @@ This template is a DAG template which consists of three steps:
 - **REGISTRY_USERNAME:** The name of your registry username.
 - **IMAGE_NAME:** The name of the new image.
 - **IMAGE_VERSION_TAG:** The image tag of the new image.
-- **PATH_TO_DOCKERFILE:** The location of the Dockerfile in your repository, e.g. ("Dockerfile" or "some-directory/Dockerfile")
+- **PATH_TO_DOCKERFILE:** The location of the Dockerfile in your repository, e.g. ("Dockerfile" means in root directory or "some-directory/Dockerfile")
 
 ## Examples
 ```yaml  
@@ -40,11 +40,11 @@ spec:
                 - name: SECRET_NAME
                   value: 'kaniko-secret'
                 - name: REGISTRY_DOCKER_CONFIG_JSON_VALUE
-                  value: 'ewogICJhdXRocyI6IHsKICAgICJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOiB7CiAgICAgICJ1c2VybmFtZSI6ICJuYW1lIiwKICAgICAgInBhc3N3b3JkIjogImdocF9oZWhlaGVoZWhlaGVoZWhlaGVoZWhlaGVoZWhlIiwKICAgICAgImVtYWlsIjogIiIsCiAgICAgICJhdXRoIjogImJtRnRaVHBuYUhCZmFHVm9aV2hsYUdWb1pXaGxhR1ZvWldobGFHVm9aV2hsYUdWb1pRPT0iCiAgICB9CiAgfQp9'
+                  value: 'your-value'
                 - name: GIT_USERNAME
                   value: 'name'
                 - name: GIT_TOKEN
-                  value: 'ghp_hehehehehehehehehehehehehehe'
+                  value: 'your-token'
                 - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
                   value: '//github.com/user/repo_name.git'
                 - name: GIT_REPOSITORY_BRANCH
@@ -52,9 +52,9 @@ spec:
                 - name: REGISTRY_USERNAME
                   value: 'name'
                 - name: IMAGE_NAME
-                  value: 'basic-api-dev'
+                  value: 'your-image-name'
                 - name: IMAGE_VERSION_TAG
-                  value: '0.0.1'
+                  value: 'your-image-tag'
                 - name: PATH_TO_DOCKERFILE
                   value: "Dockerfile"
 ```

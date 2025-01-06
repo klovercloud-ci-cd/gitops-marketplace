@@ -29,13 +29,13 @@ spec:
             arguments:
               parameters:
                 - name: IMAGE_NAME
-                  value: 'potato-v1-dev-branch'
+                  value: 'your-image-name'
                 - name: IMAGE_VERSION_TAG
-                  value: '87c1eb28e69f4a80a542'
+                  value: 'your-image-tag'
                 - name: REGISTRY_USERNAME
-                  value: 'rafsnil'
+                  value: 'your-registry-username'
                 - name: REGISTRY_PASSWORD
-                  value: 'hehehehehehehehehehehehehehehehehehehehe'
+                  value: 'your-registry-token'
                 - name: HARBOR_REGISTRY_URL
                   value: 'harbor.klovercloud.io'
                 - name: PROJECT_NAME
