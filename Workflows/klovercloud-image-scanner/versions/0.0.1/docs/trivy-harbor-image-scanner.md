@@ -2,7 +2,7 @@
 This template uses Trivy to scan your image in your Harbor Registry.
 
 # Template Parameters
-- **HARBOR_REGISTRY_URL:** The server url of your registry.
+- **HARBOR_REGISTRY_SERVER_URL:** The server url of your registry.
 - **PROJECT_NAME:** The project name of your registry.
 - **IMAGE_NAME:** The name of the image you want to scan.
 - **IMAGE_VERSION_TAG:** The version/tag of the image you want to scan.
@@ -36,7 +36,7 @@ spec:
                   value: 'your-registry-username'
                 - name: REGISTRY_PASSWORD
                   value: 'your-registry-token'
-                - name: HARBOR_REGISTRY_URL
+                - name: HARBOR_REGISTRY_SERVER_URL
                   value: 'harbor.klovercloud.io'
                 - name: PROJECT_NAME
                   value: 'test'

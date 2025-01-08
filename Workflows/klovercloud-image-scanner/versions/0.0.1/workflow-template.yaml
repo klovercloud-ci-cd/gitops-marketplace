@@ -45,7 +45,7 @@ spec:
     - name: trivy-harbor-image-scanner
       inputs:
         parameters:
-          - name: HARBOR_REGISTRY_URL
+          - name: HARBOR_REGISTRY_SERVER_URL
           - name: PROJECT_NAME
           - name: IMAGE_NAME # Required
           - name: IMAGE_VERSION_TAG
@@ -53,7 +53,7 @@ spec:
           - name: REGISTRY_PASSWORD   # Optional, Required if registry is private
       container:
         image: aquasec/trivy
-        command: [trivy, image, "{{inputs.parameters.HARBOR_REGISTRY_URL}}/{{inputs.parameters.PROJECT_NAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}"]
+        command: [trivy, image, "{{inputs.parameters.HARBOR_REGISTRY_SERVER_URL}}/{{inputs.parameters.PROJECT_NAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}"]
         env:
           - name: TRIVY_USERNAME
             value: "{{inputs.parameters.REGISTRY_USERNAME}}"
