@@ -3,7 +3,7 @@ kind: WorkflowTemplate
 metadata:
   annotations:
     klovercloud-workflow-hub/category: 'ARGO'
-  name: klovercloud-private-repo-private-registry-image-builder
+  name: klovercloud-image-builder
 spec:
   entrypoint: klovercloud-image-builder
   templates:
@@ -17,6 +17,7 @@ spec:
           - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
           - name: GIT_REPOSITORY_BRANCH
           - name: REGISTRY_USERNAME
+          - name: REGISTRY_PREFIX
           - name: IMAGE_NAME
           - name: IMAGE_VERSION_TAG
           - name: PATH_TO_DOCKERFILE
@@ -44,6 +45,8 @@ spec:
                   value: '{{inputs.parameters.GIT_REPOSITORY_BRANCH}}'
                 - name: PATH_TO_DOCKERFILE
                   value: '{{inputs.parameters.PATH_TO_DOCKERFILE}}'
+                - name: REGISTRY_PREFIX
+                  value: '{{inputs.parameters.REGISTRY_PREFIX}}'
                 - name: REGISTRY_USERNAME
                   value: '{{inputs.parameters.REGISTRY_USERNAME}}'
                 - name: IMAGE_NAME
@@ -89,6 +92,7 @@ spec:
           - name: GIT_REPOSITORY_URL_WITHOUT_HTTPS
           - name: GIT_REPOSITORY_BRANCH
           - name: PATH_TO_DOCKERFILE
+          - name: REGISTRY_PREFIX
           - name: REGISTRY_USERNAME
           - name: IMAGE_NAME
           - name: IMAGE_VERSION_TAG
@@ -113,7 +117,7 @@ spec:
             - args:
               - --context=git:{{inputs.parameters.GIT_REPOSITORY_URL_WITHOUT_HTTPS}}#{{inputs.parameters.GIT_REPOSITORY_BRANCH}}
               - --dockerfile={{inputs.parameters.PATH_TO_DOCKERFILE}}
-              - --destination={{inputs.parameters.REGISTRY_USERNAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}
+              - --destination={{inputs.parameters.REGISTRY_PREFIX}}{{inputs.parameters.REGISTRY_USERNAME}}/{{inputs.parameters.IMAGE_NAME}}:{{inputs.parameters.IMAGE_VERSION_TAG}}
               env:
               - name: GIT_USERNAME
                 value: '{{inputs.parameters.GIT_USERNAME}}'

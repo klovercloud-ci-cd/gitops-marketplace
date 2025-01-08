@@ -14,6 +14,7 @@ This template is a DAG template which consists of three steps:
 - **GIT_TOKEN:** The token of your Git account.
 - **GIT_REPOSITORY_URL_WITHOUT_HTTPS:** The https clone url of your repository without the "https".
 - **GIT_REPOSITORY_BRANCH:** The repository for which you want the image to be built.
+- **REGISTRY_PREFIX:** This is the prefix before your repository, e.g. for docker there's no prefix, for harbor 'habor_server_url/project_name/' and for quay 'quay.io/'. NOTE: If there's a prefix, always give the last forward slash '/'.
 - **REGISTRY_USERNAME:** The name of your registry username.
 - **IMAGE_NAME:** The name of the new image.
 - **IMAGE_VERSION_TAG:** The image tag of the new image.
